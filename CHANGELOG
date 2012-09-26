@@ -1,3 +1,9 @@
+1.0.3 : (In progress)
+
+- Applied patch to handle SOLR_DEBUG better
+- No longer pass "waitFlush" in commit
+- Organized versioning in the .h files
+
 1.0.2 : 2011-11-29
 
 - Several Bug Fixes by Pierrick, Felipe and Tony

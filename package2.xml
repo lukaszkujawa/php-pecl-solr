@@ -18,8 +18,8 @@
 	</developer>
 	<date>2012-09-26</date>
 	<version>
-		<release>1.0.2</release>
-		<api>1.0.2</api>
+		<release>1.0.3</release>
+		<api>1.0.3</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -30,9 +30,9 @@
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Several Bug Fixes by Pierrick, Felipe and Tony
-- Changes to make the code compile on 5.2.3 and greater
-- Changes to Tests by Pierrick
+- Applied patch to handle SOLR_DEBUG better
+- No longer pass "waitFlush" in commit
+- Organized versioning in the .h files
 ]]>
 	</notes>
 	
