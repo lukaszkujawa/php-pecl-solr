@@ -22,7 +22,7 @@
 #define SOLR_CONSTANTS_H
 
 /* {{{ Current version of Solr extension */
-#define PHP_SOLR_DOTTED_VERSION "1.0.1"
+#define PHP_SOLR_DOTTED_VERSION "1.0.2"
 #define SOLR_CLIENT_USER_AGENT "PHP Solr Client " PHP_SOLR_DOTTED_VERSION
 
 #define SOLR_SPACE_STRING " "
