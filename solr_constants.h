@@ -21,7 +21,9 @@
 #ifndef SOLR_CONSTANTS_H
 #define SOLR_CONSTANTS_H
 
-#include "php_solr_version.h"
+/* {{{ Current version of Solr extension */
+#define PHP_SOLR_DOTTED_VERSION "1.0.1"
+#define SOLR_CLIENT_USER_AGENT "PHP Solr Client " PHP_SOLR_DOTTED_VERSION
 
 #define SOLR_SPACE_STRING " "
 
