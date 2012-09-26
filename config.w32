@@ -32,10 +32,8 @@ if(PHP_LIBXML == 'no' || !ADD_EXTENSION_DEP('solr', 'libxml')) {
 	PHP_SOLR = "no";
 }
 if(PHP_SOLR != 'no') {
-	if(PHP_SOLR_DEBUG == 'no') {
-		AC_DEFINE('SOLR_DEBUG_OFF', 1, 'Solr debugging set to off');
-	} else {
-		AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
+	if(PHP_SOLR_DEBUG != 'no') {
+		AC_DEFINE('SOLR_DEBUG', 1, 'Defining SOLR_DEBUG');
 	}
 
 	EXTENSION('solr', 
@@ -49,7 +47,7 @@ if(PHP_SOLR != 'no') {
 	ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
 	AC_DEFINE('HAVE_SOLR', 1, 'Solr support');
 
-	if (!PHP_SOLR_SHARED) {
+	if(!PHP_SOLR_SHARED) {
 		ADD_FLAG("CFLAGS_SOLR", "/D LIBXML_STATIC");
 	}
 	ADD_EXTENSION_DEP('solr', 'libxml');

@@ -1048,7 +1048,7 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
-#if SOLR_DEBUG
+#ifdef SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 
@@ -1109,7 +1109,7 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
-#if SOLR_DEBUG
+#ifdef SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 
@@ -1170,7 +1170,7 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
-#if SOLR_DEBUG
+#ifdef SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 

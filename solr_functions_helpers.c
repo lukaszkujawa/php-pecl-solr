@@ -20,7 +20,7 @@
 
 #include "php_solr.h"
 
-#if !(PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2)
+#if ((PHP_MAJOR_VERSION == 5) && (PHP_MINOR_VERSION > 2)) || (PHP_MAJOR_VERSION > 5)
 	ZEND_EXTERN_MODULE_GLOBALS(json)
 #endif
 

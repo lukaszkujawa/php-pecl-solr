@@ -3,12 +3,11 @@ dnl $Id: config.m4 298824 2010-04-30 21:36:26Z iekpo $
 
 dnl config.m4 for the solr extension
 
-AC_ARG_ENABLE(solr-debug,
-[  --enable-solr-debug          Compile with solr in verbose mode],[
-  AC_DEFINE(SOLR_DEBUG, 1,	[Setting the value of SOLR_DEBUG to 1 ])
-],[
-  AC_DEFINE(SOLR_DEBUG_OFF, 1,	[Setting the value of SOLR_DEBUG_OFF to 1 ])
-])
+PHP_ARG_ENABLE(solr-debug, whether to compile with solr in verbose mode,
+[  --enable-solr-debug          Compile with solr in verbose mode], no, no)
+if test "$PHP_SOLR_DEBUG" != "no"; then
+  AC_DEFINE(SOLR_DEBUG, 1, [Defining SOLR_DEBUG])
+fi
 
 dnl Configuring the CURL external library
 dnl This folder is the grand-parent folder of easy.h
