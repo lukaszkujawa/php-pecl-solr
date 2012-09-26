@@ -1,0 +1,136 @@
+Solr Development Quick-start & Braindump
+
+================================================================================
+Solr Notes about Memory Allocation and interaction with HashTables
+================================================================================
+
+The following notes are for C-space PHP developers.
+
+If you are not really familiar with how the Zend HashTable API or the
+memory allocation marcros really works, please take sometime to read the notes below :
+
+This is correct as of Zend Engine version 2.3.0
+
+- If memory was allocated with emalloc(), it has to be freed with efree().
+
+- If memory was allocated using pemalloc(), the same value for the persistent
+parameter must be used during pefree() to deallocated the allocated memory.
+The memory manager for the Zend API will then decide whether to use free() or
+efree() depending on whether persistent is 1 or 0 respectively. The same
+principle applies to pestrdup(), pecalloc() and the other memory allocation
+macros.
+
+- When inserting values into the HashTables, if the value for the persistent
+parameter is set, then the memory allocation for the entered item should be
+persistent to i.e. pemalloc() with persistent set to 1.
+
+The following will apply when adding new values into a HashTable for items
+that were dynamically allocated :
+
+(a) If the value for the nDataSize parameter is the size of that of a
+pointer sizeof(void *), the HashTable API copies the contents of
+the pData parameter into the Bucket->pDataPtr member for that data Bucket.
+Then it sets the Bucket->pData member to the address of the Bucket->pDataPtr
+member for that data Bucket.
+
+(b) If the value for the nDataSize parameter is not equal to sizeof(void *),
+the HashTable API allocates new memory for the Bucket->pData member using
+the size equivalent to nDataSize and the same value for the persistent flag
+set for the target HashTable. The the contents of the pData parameter is
+copied into the Bucket->pData member in this newly allocated memory location.
+Then the Bucket->pDataPtr member for this Bucket is set to NULL.
+
+Do not worry about the newly allocated memory allocated by the HashTable API;
+if the nDataSize parameter was not equal to sizeof(void *), then
+during the cleanup process, the Zend API will free the new memory it allocated
+during the insert process.
+
+It will also call the destructor function if a valid one was passed when the
+HashTable was initialized with zend_hash_init().
+
+In the extension, I have used the p* version of the memory allocation functions 
+to allow me toggle if there is any need to do so in the future. This will prevent
+a massive search and replace effort.
+
+For all the HashTables, I set the intial size to 8 to reduce the looping when 
+zend_hash_init() is setting up the HashTable pointer to use.
+
+
+==================================================================
+Release Checklist
+==================================================================
+0. Make sure version information is updated in php_solr_version.h and package.xml
+
+1. Checkout release candidate source code from SVN, then compile and install.
+      svn co http://svn.php.net/repository/pecl/solr/trunk pecl-solr
+      cd pecl-solr
+      phpize 
+      ./configure
+     make 
+     make install
+
+   Adjust the php.ini files as needed
+
+2. Make sure to compile and run make test for both debug and ZTS/non-ZTS modes in target php versions.
+
+3. If successful, document all the changes in the package.xml file and also in the php documentation and then create an svn tag
+      svn copy  http://svn.php.net/repository/pecl/solr/trunk  http://svn.php.net/repository/pecl/solr/tags/release_A_B_C
+
+4. Create the release tarball
+      pear package
+
+5. Upload the tarball to PECL
+
+
+================================================================================
+Submitting contributions
+================================================================================
+
+A lot of time has been put into designing, implementing and documenting this extension.
+
+A lot of work has also been put into ensuring that users of the extension
+experience very minimal defects during usage.
+
+New ideas, corrections, bug fixes, feature improvements are always welcome.
+
+However, you must discuss any changes you are about to make to any of 
+the source files prior to making or submitting such changes either in the
+PECL developers mailing list (pecl-dev@lists.php.net) or by contacting the 
+current author(s) or maintainer(s) of this extension directly.
+
+Test scripts should be included when making the submissions.
+
+Also explain thoroughly what has been fixed/added/changed by your patch.
+
+If your patch is easy to review and has obviously no side-effects,
+it might take up to a few hours until it is committed.
+
+Since this is a volunteer-driven effort, more complex patches will
+require more patience on the part of the submitter.
+
+================================================================================
+Testing thoroughly before submissions
+================================================================================
+
+This is a fairly large library and each component is dependent on another
+component either directly or indirectly.
+
+As a consequence, any and all changes must be tested thoroughly before commiting them.
+
+It is only polite to the users, author(s) or maintainer(s) that you do so.
+
+================================================================================
+Checklist for making submissions
+================================================================================
+
+ - Did you run "make test" to check if your patch didn't break
+   other features?
+ - Did you compile PHP with --enable-debug and check the PHP and
+   web server error logs when you test your patch?
+ - Did you build PHP for multi-threaded web servers.
+ - Did you create test script for "make test"? (Recommended)
+ - Did you check your patch is unified format and it does not 
+   contain white space changes?
+ - Did you update SVN source before you take final patch?
+ - Did you read the patch again?
+ 
