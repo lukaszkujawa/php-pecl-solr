@@ -67,11 +67,11 @@ fi
 
 dnl Setting up the Apache Solr extension
 if test "$PHP_CURL" = "no"; then
-  AC_MSG_ERROR([SOAP extension requires curl extension, add --with-curl])
+  AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])
 fi
 
 if test "$PHP_LIBXML" = "no"; then
-  AC_MSG_ERROR([SOAP extension requires LIBXML extension, add --enable-libxml])
+  AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])
 fi
 
 PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
@@ -97,5 +97,4 @@ PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     $ext_shared)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
-  ])
-fi
+])
