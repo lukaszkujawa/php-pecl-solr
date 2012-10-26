@@ -3,6 +3,7 @@
 - Applied patch to handle SOLR_DEBUG better
 - No longer pass "waitFlush" in commit
 - Organized versioning in the .h files
+- Ditched "phpnative" responseWriter, introduced "phps" ("php" native still in progress)
 
 1.0.2 : 2011-11-29
 
