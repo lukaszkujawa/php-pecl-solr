@@ -992,6 +992,9 @@ PHP_MINIT_FUNCTION(solr)
     /* This internal property will be used to map to this SolrClient instance */
     zend_declare_property_long(solr_ce_SolrClient, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
 
+    /* Register SolrClient class properties */
+    solr_client_register_class_properties(solr_ce_SolrClient TSRMLS_CC);
+
     /* Register SolrClient class constants */
     solr_client_register_class_constants(solr_ce_SolrClient TSRMLS_CC);
 

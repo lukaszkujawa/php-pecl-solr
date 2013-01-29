@@ -20,6 +20,10 @@
 
 #include "php_solr.h"
 
+/* {{{ Macro for extracting property values using string constants */
+#define solr_read_client_object_property(objptr, name, silent) zend_read_property(Z_OBJCE_P(objptr), objptr, name, sizeof(name)-1, silent TSRMLS_CC)
+/* }}} */
+
 /* {{{ Macros */
 /* Used to release the (solr_document_t **) pointers */
 #define SOLR_FREE_DOC_ENTRIES(ptr) { \
@@ -206,6 +210,7 @@ PHP_METHOD(SolrClient, __construct)
 	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
 	long int client_index = 0L;
+	long int version_mode = 0L;
 	zval **tmp1 = NULL, **tmp2 = NULL;
 	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
@@ -220,13 +225,13 @@ PHP_METHOD(SolrClient, __construct)
 	long int timeout = 30L;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|l", &options, &version_mode) == FAILURE) {
 
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
 
 		return;
 	}
-
+	
 	options_ht = Z_ARRVAL_P(options);
 
 	num_options = zend_hash_num_elements(options_ht);
@@ -238,10 +243,14 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
+    version_mode = ((version_mode < 0L) ? 0L : ((version_mode > 1L) ? 1L : version_mode));
+
+	zend_update_property_long(solr_ce_SolrClient, objptr, "version", sizeof("version") - 1, version_mode TSRMLS_CC);
+
 	client_index = SOLR_UNIQUE_CLIENT_INDEX();
 
 	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
-
+ 	
 	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
 	memset(solr_client, 0, sizeof(solr_client_t));
@@ -712,6 +721,7 @@ PHP_METHOD(SolrClient, query)
    Adds a document to the Solr server. */
 PHP_METHOD(SolrClient, addDocument)
 {
+	zval *objptr  = getThis();
 	zval *solr_input_doc = NULL;
 	zend_bool allowDups = 0;
 	long int commitWithin = 0L;
@@ -726,6 +736,8 @@ PHP_METHOD(SolrClient, addDocument)
 	xmlChar *request_string = NULL;
 	xmlNode *solr_doc_node = NULL;
 	zend_bool success = 1;
+	zend_bool silent = 1;
+	zval *solrVersion = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &allowDups, &commitWithin) == FAILURE) {
@@ -762,10 +774,11 @@ PHP_METHOD(SolrClient, addDocument)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
 
-	/* Skipped since deprecated long before Solr 4.0
-	allowDupsValue = (allowDups)? "true" : "false";
-	xmlNewProp(root_node, (xmlChar *) "allowDups", (xmlChar *) allowDupsValue);
-	*/
+	solrVersion = solr_read_client_object_property(objptr, "version", silent);
+	if( Z_LVAL_P( solrVersion ) == SOLR_VERSION_3 ) {
+		allowDupsValue = (allowDups)? "true" : "false";
+		xmlNewProp(root_node, (xmlChar *) "allowDups", (xmlChar *) allowDupsValue);
+	}
 
 	if (commitWithin > 0L)
 	{
