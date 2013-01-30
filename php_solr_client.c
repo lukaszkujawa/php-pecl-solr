@@ -210,7 +210,8 @@ PHP_METHOD(SolrClient, __construct)
 	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
 	long int client_index = 0L;
-	long int version_mode = 0L;
+	solr_char_t *version = NULL;
+	int version_len = 0;
 	zval **tmp1 = NULL, **tmp2 = NULL;
 	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
@@ -225,7 +226,7 @@ PHP_METHOD(SolrClient, __construct)
 	long int timeout = 30L;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|l", &options, &version_mode) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|s", &options, &version, &version_len ) == FAILURE) {
 
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
 
@@ -243,9 +244,12 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
-    version_mode = ((version_mode < 0L) ? 0L : ((version_mode > 1L) ? 1L : version_mode));
-
-	zend_update_property_long(solr_ce_SolrClient, objptr, "version", sizeof("version") - 1, version_mode TSRMLS_CC);
+	if( version_len ) {
+		if( atof(version) == 0 ) {
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Incorrect version");
+		}
+		zend_update_property_stringl(solr_ce_SolrClient, objptr, "version", sizeof("version")-1, version, version_len TSRMLS_CC);
+	}
 
 	client_index = SOLR_UNIQUE_CLIENT_INDEX();
 
@@ -774,11 +778,13 @@ PHP_METHOD(SolrClient, addDocument)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
 
+	
 	solrVersion = solr_read_client_object_property(objptr, "version", silent);
-	if( Z_LVAL_P( solrVersion ) == SOLR_VERSION_3 ) {
+	if( atof( Z_STRVAL_P( solrVersion ) ) < 4 ) {
 		allowDupsValue = (allowDups)? "true" : "false";
 		xmlNewProp(root_node, (xmlChar *) "allowDups", (xmlChar *) allowDupsValue);
 	}
+	
 
 	if (commitWithin > 0L)
 	{

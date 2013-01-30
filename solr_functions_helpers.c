@@ -57,9 +57,6 @@ PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRM
 	zend_declare_class_constant_long(ce, "PING_SERVLET_TYPE",    sizeof("PING_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_PING TSRMLS_CC);
 	zend_declare_class_constant_long(ce, "TERMS_SERVLET_TYPE",    sizeof("TERMS_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_TERMS TSRMLS_CC);
 
-	zend_declare_class_constant_long(ce, "VERSION_4",    sizeof("VERSION_4")-1, SOLR_VERSION_4 TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "VERSION_3",    sizeof("VERSION_3")-1, SOLR_VERSION_3 TSRMLS_CC);
-
 	zend_declare_class_constant_string(ce, "DEFAULT_SEARCH_SERVLET",  sizeof("DEFAULT_SEARCH_SERVLET")-1, SOLR_DEFAULT_SEARCH_SERVLET TSRMLS_CC);
 	zend_declare_class_constant_string(ce, "DEFAULT_UPDATE_SERVLET",  sizeof("DEFAULT_UPDATE_SERVLET")-1, SOLR_DEFAULT_UPDATE_SERVLET TSRMLS_CC);
 	zend_declare_class_constant_string(ce, "DEFAULT_THREADS_SERVLET", sizeof("DEFAULT_THREADS_SERVLET")-1, SOLR_DEFAULT_THREADS_SERVLET TSRMLS_CC);
@@ -72,7 +69,7 @@ PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRM
 /* {{{ void solr_client_register_class_properties(zend_class_entry *ce TSRMLS_DC) */
 PHP_SOLR_API void solr_client_register_class_properties(zend_class_entry *ce TSRMLS_DC)
 {
-	zend_declare_property_long(ce, "version", sizeof("version")-1, SOLR_VERSION_3, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_string(ce, "version", sizeof("version")-1, "3.0", ZEND_ACC_PROTECTED TSRMLS_CC);
 }
 /* }}} */
 

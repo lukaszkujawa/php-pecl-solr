@@ -183,6 +183,9 @@
 #define SOLR_ERROR_4002 4002L
 #define SOLR_ERROR_4002_MSG  "Return value requested without processing output"
 
+#define SOLR_ERROR_4003 4003L
+#define SOLR_ERROR_4003_MSG  "Incorrect version format"
+
 /* }}} */
 
 /* {{{ UserSpace Errors */
