@@ -269,6 +269,10 @@ ZEND_BEGIN_ARG_INFO_EX(SolrClient_setServlet_args, SOLR_ARG_PASS_REMAINING_BY_RE
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, type)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrClient_setRequestHandler_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ SolrParams arguments */
@@ -564,7 +568,8 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, rollback, SolrClient_rollback_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, ping, SolrClient_ping_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, threads, SolrClient_threads_args, ZEND_ACC_PUBLIC)
-
+	PHP_ME(SolrClient, setRequestHandler, SolrClient_setRequestHandler_args, ZEND_ACC_PUBLIC)
+	
 	{ NULL, NULL, NULL }
 };
 /* }}} */

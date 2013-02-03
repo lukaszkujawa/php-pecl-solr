@@ -61,7 +61,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 
 		solr_string_append_const(&url_prefix, "http://");
 	}
-
+	
 	solr_string_append_solr_string(&url_prefix, &(options->hostname));
 	solr_string_appendc(&url_prefix, ':');
 	solr_string_append_long(&url_prefix, options->host_port);
@@ -82,7 +82,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->thread_url), &(options->thread_servlet));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->terms_servlet));
-
+	
 	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->thread_url), "/?version=2.2&indent=on&wt=");
@@ -532,6 +532,35 @@ PHP_METHOD(SolrClient, __wakeup)
 PHP_METHOD(SolrClient, __clone)
 {
 	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
+}
+/* }}} */
+
+/* {{{ proto bool SolrClient::setRequestHandler(string new_request_handler)
+   Changes the request handler (qt) */
+PHP_METHOD(SolrClient, setRequestHandler)
+{
+	solr_char_t *request_handler = NULL;
+	int request_handler_length = 0;
+	solr_client_t *client = NULL;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &request_handler, &request_handler_length) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter.");
+
+		RETURN_FALSE;
+	}
+	
+	/* Retrieve the client entry */
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+
+		RETURN_FALSE;
+	}
+	
+	solr_string_set(&(client->options.search_servlet), request_handler, request_handler_length);
+	
+	RETURN_TRUE;
 }
 /* }}} */
 

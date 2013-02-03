@@ -248,6 +248,7 @@ PHP_METHOD(SolrClient, deleteByQueries);
 PHP_METHOD(SolrClient, optimize);
 PHP_METHOD(SolrClient, commit);
 PHP_METHOD(SolrClient, rollback);
+PHP_METHOD(SolrClient, setRequestHandler);
 /* }}} */
 
 /* {{{ SolrParams methods declarations */
