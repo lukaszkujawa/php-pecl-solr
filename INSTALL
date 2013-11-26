@@ -1,4 +1,3 @@
-
  $Id: README.INSTALLATION 300651 2010-06-22 04:29:35Z iekpo $
 
 ================================================================================
@@ -34,6 +33,8 @@ To install the Apache Solr extension directly from PECL, please enter the follow
 pecl install solr-beta
 
 To compile from source, please follow the following steps
+
+phpize
 
 ./configure
 
